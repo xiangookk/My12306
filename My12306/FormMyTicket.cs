@@ -17,14 +17,11 @@ namespace My12306
 {
     public partial class FormMyTicket : Form
     {
-        [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool InternetSetCookie(string A_0, string A_1, string A_2);
-
         public FormMyTicket()
         {
             InitializeComponent();
         }
-        Post post = new Post();
+        RequestClass request = new RequestClass();
         string strURL = "";
         string strArgs = string.Empty;
         string strReferer = "https://dynamic.12306.cn/otsweb/loginAction.do?method=init";
@@ -144,13 +141,12 @@ namespace My12306
         //获取登陆验证图片
         private void Getpic()
         {
-            //先清空
+            //先清空 
             randCode = "";
 
-            method = "get";
             strArgs = "";
-            strURL = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&0.157251540519862";
-            string resImg = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+            strURL = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&"+new Random().NextDouble();
+            string resImg = request.PostData(strURL, strArgs, "get");
             string strImg = resImg.Substring(resImg.IndexOf("|") + 1);
             byte[] bImg = Convert.FromBase64String(strImg);
             MemoryStream ms = new MemoryStream(bImg);
@@ -163,7 +159,7 @@ namespace My12306
             method = "get";
             strArgs = "";
             strURL = "https://dynamic.12306.cn/otsweb/passCodeAction.do?rand=randp";
-            string resImg = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+            string resImg = request.PostData(strURL, strArgs, "get");
             string strImg = resImg.Substring(resImg.IndexOf("|") + 1);
             if (string.IsNullOrEmpty(strImg))
             {
@@ -184,17 +180,16 @@ namespace My12306
         {
             if (string.IsNullOrEmpty(txtLoginName.Text.Trim()) || string.IsNullOrEmpty(txtPassword.Text.Trim()) || string.IsNullOrEmpty(randCode))
             {
-                MessageBox.Show("请填写完整！"); return;
+                MessageBox.Show("请填写完整！");
+                return;
             }
             randCode = randCode.Substring(0,randCode.Length - 1);
 
         
-            //check randcode
-            method = "post";
-            strArgs = "randCode=" + randCode+"&rand=sjrand";
-            strReferer = "https://kyfw.12306.cn/";
+            //check randcode         
+            strArgs = "randCode=" + HttpUtility.UrlEncode(randCode) +"&rand=sjrand";
             strURL = "https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn";
-            string resCode = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+            string resCode = request.PostData(strURL, strArgs, "post");
             resCode = resCode.Substring(resCode.IndexOf("|") + 1);
             JObject joCode = JObject.Parse(resCode);
             if(joCode["data"]["result"].ToString()=="0")
@@ -204,25 +199,21 @@ namespace My12306
                 return;
             }
            
-            lbMsg.Text = "登陆中..";
-            
-            //login
-            method = "post";
-            strReferer = "https://kyfw.12306.cn/";
+            lbMsg.Text = "登陆中..";          
+            //login           
             strURL = "https://kyfw.12306.cn/otn/login/loginAysnSuggest";
-            strArgs = "loginUserDTO.user_name=" + txtLoginName.Text.Trim()+ "&userDTO.password=" + txtPassword.Text.Trim()+"&randCode=" + randCode;
+            strArgs = "loginUserDTO.user_name=" + txtLoginName.Text.Trim()+ "&userDTO.password=" + txtPassword.Text.Trim()+"&randCode=" + HttpUtility.UrlEncode(randCode);
            
             string resC;
             try
             {
-                resC = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                resC = request.PostData(strURL, strArgs, "post");
                 resC = resC.Substring(resC.IndexOf("|") + 1);
                 JObject joC = JObject.Parse(resC);
                 if (joC["data"]["loginCheck"].ToString() == "Y")  
-                {
-                    // string u_name = resC.Substring(resC.IndexOf("var hello = '") + 13, resC.IndexOf("，您好！'") - resC.IndexOf("var hello = '") - 14);
+                { 
                     lbMsg.Text = "登陆成功！";//+u_name;
-                    //this.Text +="-"+u_name;
+                    
                     gboLogin.Enabled = false;
                     gboLinkMan.Enabled = true;
                     //GetLinkMan();
@@ -288,7 +279,7 @@ namespace My12306
             string resLR;
             try
             {
-                resLR = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                resLR = request.PostData(strURL, strArgs, "get");
                 string retLR = resLR.Substring(resLR.IndexOf('|') + 1);
                 JObject o = JObject.Parse(retLR);
                 CheckBox cbx = checkBox1;
@@ -374,7 +365,7 @@ namespace My12306
             string resSTA;//queryststrainall
             try
             {
-                resSTA = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                resSTA = request.PostData(strURL, strArgs, "get");
                 string retSTA = resSTA.Substring(resSTA.IndexOf('|') + 1);
                 if (string.IsNullOrEmpty(retSTA))
                 { MessageBox.Show("没有对应车次！"); return; }
@@ -448,7 +439,7 @@ namespace My12306
                     strArgs = "";
                     strReferer = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
                     strURL = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
-                    string resQSAI = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                    string resQSAI = request.PostData(strURL, strArgs, "get");
                     //ueryLeftTicket
                     method = "get";
                     strArgs = "";
@@ -457,7 +448,7 @@ namespace My12306
                     string resLT;//queryLeftTicket
                     try
                     {
-                        resLT = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                        resLT = request.PostData(strURL, strArgs, "get");
                         string retLT = resLT.Substring(resLT.IndexOf('|') + 1);
                         if (string.IsNullOrEmpty(retLT))
                             continue;
@@ -505,14 +496,14 @@ namespace My12306
                                 strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
                                 strURL = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=submutOrderRequest";
                                 strArgs = "station_train_code=" + programs[i, 11] + "&train_date=" + programs[i, 3] + "&seattype_num=&from_station_telecode=" + SubOrdArgs[4] + "&to_station_telecode=" + SubOrdArgs[5] + "&include_student=00&from_station_telecode_name=" + HttpUtility.UrlEncode(programs[i, 12], Encoding.UTF8).ToUpper() + "&to_station_telecode_name=" + HttpUtility.UrlEncode(programs[i, 13], Encoding.UTF8).ToUpper() + "&round_train_date=" + programs[i, 3] + "&round_start_time_str=00%3A00--24%3A00&single_round_type=1&train_pass_type=QB&train_class_arr=QB%23D%23Z%23T%23K%23QT%23&start_time_str=00%3A00--24%3A00&lishi=" + HttpUtility.UrlEncode(SubOrdArgs[1], Encoding.UTF8).ToUpper() + "&train_start_time=" + HttpUtility.UrlEncode(SubOrdArgs[2], Encoding.UTF8).ToUpper() + "&trainno4=" + SubOrdArgs[3] + "&arrive_time=" + HttpUtility.UrlEncode(SubOrdArgs[6], Encoding.UTF8).ToUpper() + "&from_station_name=" + HttpUtility.UrlEncode(SubOrdArgs[7], Encoding.UTF8).ToUpper() + "&to_station_name=" + HttpUtility.UrlEncode(SubOrdArgs[8], Encoding.UTF8).ToUpper() + "&from_station_no=" + SubOrdArgs[9] + "&to_station_no=" + SubOrdArgs[10] + "&ypInfoDetail=" + SubOrdArgs[11] + "&mmStr=" + SubOrdArgs[12] + "&locationCode=" + SubOrdArgs[13];
-                                string resSOR = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                                string resSOR = request.PostData(strURL, strArgs, "get");
 
                                 //confirmInit
                                 method = "get";
                                 strArgs = "";
                                 strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
                                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=init";
-                                string resCI = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                                string resCI = request.PostData(strURL, strArgs, "get");
                                 string retCI = resCI.Substring(resCI.IndexOf('|') + 1);
                                 if (retCI.Contains("leftTicketStr"))
                                 {
@@ -834,7 +825,7 @@ namespace My12306
                 strReferer = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=init";
                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=checkOrderInfo&rand=" + randcode;
                 strArgs = checkOrderInfo + "&tFlag=dc";
-                string resCOI = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                string resCOI = request.PostData(strURL, strArgs, "get");
                 string retCOI = resCOI.Substring(resCOI.IndexOf('|') + 1);
                 if (string.IsNullOrEmpty(retCOI))
                 {
@@ -857,7 +848,7 @@ namespace My12306
                 method = "get";
                 strArgs = "";
                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=getQueueCount&train_date=" + programs[currentprogramsIndex, 3] + "&train_no=" + programs[currentprogramsIndex, 4] + "&station=" + programs[currentprogramsIndex, 11] + "&seat=" + GetSeatCode(programs[currentprogramsIndex, 5]) + "&from=" + programs[currentprogramsIndex, 0] + "&to=" + programs[currentprogramsIndex, 2] + "&ticket=" + leftTicketStr;     
-                string resGQC = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                string resGQC = request.PostData(strURL, strArgs, "get");
                 string retGQC = resGQC.Substring(resGQC.IndexOf('|') + 1);
                 if (string.IsNullOrEmpty(retGQC))
                 {
@@ -880,7 +871,7 @@ namespace My12306
                 method = "post";
                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=confirmSingleForQueue";
                 strArgs = checkOrderInfo;
-                string resGFQ = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                string resGFQ = request.PostData(strURL, strArgs, "get");
                 string retGFQ = resGFQ.Substring(resGFQ.IndexOf('|') + 1);
                 if (string.IsNullOrEmpty(retGFQ))
                 {
@@ -902,7 +893,7 @@ namespace My12306
                 method = "get";
                 strURL = "https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryOrderWaitTime&tourFlag=dc";
                 strArgs = "";
-                string resOWT = post.PostData(dlip, strURL, strArgs, strReferer, code, method);
+                string resOWT = request.PostData(strURL, strArgs, "get");
                 string retOWT = resOWT.Substring(resOWT.IndexOf('|') + 1);
                 if (string.IsNullOrEmpty(retOWT))
                 {

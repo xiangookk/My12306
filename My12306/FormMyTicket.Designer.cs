@@ -39,6 +39,7 @@
             this.gboLogin = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.lbMsg = new System.Windows.Forms.Label();
             this.gboLinkMan = new System.Windows.Forms.GroupBox();
             this.checkBox10 = new System.Windows.Forms.CheckBox();
             this.checkBox9 = new System.Windows.Forms.CheckBox();
@@ -85,7 +86,6 @@
             this.清空ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lbMsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picCode)).BeginInit();
             this.gboLogin.SuspendLayout();
             this.gboLinkMan.SuspendLayout();
@@ -180,9 +180,9 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(247, 63);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(50, 20);
+            this.button1.Size = new System.Drawing.Size(50, 27);
             this.button1.TabIndex = 10;
             this.button1.Text = "刷新";
             this.button1.UseVisualStyleBackColor = true;
@@ -198,6 +198,16 @@
             this.label4.Size = new System.Drawing.Size(171, 17);
             this.label4.TabIndex = 9;
             this.label4.Text = "提示：密码错误次数不超过3次";
+            // 
+            // lbMsg
+            // 
+            this.lbMsg.AutoSize = true;
+            this.lbMsg.ForeColor = System.Drawing.Color.DarkRed;
+            this.lbMsg.Location = new System.Drawing.Point(18, 260);
+            this.lbMsg.Name = "lbMsg";
+            this.lbMsg.Size = new System.Drawing.Size(47, 12);
+            this.lbMsg.TabIndex = 8;
+            this.lbMsg.Text = "       ";
             // 
             // gboLinkMan
             // 
@@ -716,16 +726,6 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(32, 17);
             this.toolStripStatusLabel1.Text = "等待";
-            // 
-            // lbMsg
-            // 
-            this.lbMsg.AutoSize = true;
-            this.lbMsg.ForeColor = System.Drawing.Color.DarkRed;
-            this.lbMsg.Location = new System.Drawing.Point(18, 260);
-            this.lbMsg.Name = "lbMsg";
-            this.lbMsg.Size = new System.Drawing.Size(47, 12);
-            this.lbMsg.TabIndex = 8;
-            this.lbMsg.Text = "       ";
             // 
             // FormMyTicket
             // 

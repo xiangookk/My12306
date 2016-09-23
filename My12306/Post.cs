@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.IO;
-using System.IO.Compression;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Xml;
 using System.Security.Cryptography;
-using System.Net.Security;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 
 namespace My12306
 {
     /// <summary>
     /// 实现网站登录类
     /// </summary>
-    public class Post
+    internal class RequestClass
     {
         /// <summary>
         /// 网站Cookies
@@ -56,13 +52,9 @@ namespace My12306
             get { return _para; }
             set { _para = value; }
         }
-        //public bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
-        //{   // 总是接受  
-        //    return true;
-        //}
-       public CookieContainer cc = new CookieContainer();
-        
-        /**/
+       
+       private CookieContainer cc = new CookieContainer();
+           
         /// <summary>
         /// 功能描述：模拟登录页面，提交登录数据进行登录，并记录Header中的cookie
         /// </summary>
@@ -71,56 +63,41 @@ namespace My12306
         /// <param name="strReferer">引用地址</param>
         /// <param name="code">网站编码</param>
         /// <returns>可以返回页面内容或不返回</returns>
-        public string PostData(string strURL, string strArgs, string strReferer, string code, string method)
+        internal string PostData(string strURL, string strArgs, string method)
         {
-            return PostData("",strURL, strArgs, strReferer, code, method, string.Empty);
-        }
-        public string PostData(string dlip, string strURL, string strArgs, string strReferer, string code, string method)
-        {
-            return PostData(dlip, strURL, strArgs, strReferer, code, method, string.Empty);
-        }
+            return PostData("",strURL, strArgs, "https://kyfw.12306.cn/otn/login/init", "utf-8", method, string.Empty);
+        }    
         private string PostData(string dlip,string strURL, string strArgs, string strReferer, string code, string method, string contentType)
         {
             try
             {
                 string strResult = "";
                 Stream PostStream = null;
-                System.Net.ServicePointManager.ServerCertificateValidationCallback += (se, cert, chain, sslerror) => { return true; };
-               // ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(CheckValidationResult);//验证服务器证书回调自动验证
+                ServicePointManager.ServerCertificateValidationCallback += (se, cert, chain, sslerror) => { return true; };               
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(strURL);
-                myHttpWebRequest.AllowAutoRedirect = true;
-                myHttpWebRequest.KeepAlive = true;
                 myHttpWebRequest.Timeout = 50000;
-               // myHttpWebRequest.Connection = "	keep-alive";
-                myHttpWebRequest.Accept = "text/plain,image/jpeg,text/html,application/xhtml+xml,application/json,text/javascript,application/xml;q=0.9,*/*;q=0.8";
+                myHttpWebRequest.Accept = "*/*";            
                 myHttpWebRequest.Referer = strReferer;
                 //firefox
-               myHttpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; rv:19.0) Gecko/20100101 Firefox/19.0";
-                // myHttpWebRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; SV1; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022; InfoPath.1; CIBA)";
-                if (string.IsNullOrEmpty(contentType))
-                {
-                    myHttpWebRequest.ContentType = "application/x-www-form-urlencoded;";
-                }
-                else
-                {
-                    myHttpWebRequest.ContentType = contentType;
-                }
-                if (!string.IsNullOrEmpty(dlip))
-                {
-                    WebProxy prox;
-                    if (dlip.IndexOf(":") == -1)
-                    {
-                        prox = new WebProxy(dlip);
-                    }
-                    else
-                    {
-                        prox = new WebProxy(dlip.Split(':')[0], int.Parse(dlip.Split(':')[1]));
-                    }
-                    myHttpWebRequest.Proxy = prox;
-                }
+                myHttpWebRequest.UserAgent = "Mozilla / 5.0(Windows NT 10.0; WOW64; rv: 49.0) Gecko / 20100101 Firefox / 49.0";
+                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                myHttpWebRequest.Host = "kyfw.12306.cn";
+                //if (!string.IsNullOrEmpty(dlip))
+                //{
+                //    WebProxy prox;
+                //    if (dlip.IndexOf(":") == -1)
+                //    {
+                //        prox = new WebProxy(dlip);
+                //    }
+                //    else
+                //    {
+                //        prox = new WebProxy(dlip.Split(':')[0], int.Parse(dlip.Split(':')[1]));
+                //    }
+                //    myHttpWebRequest.Proxy = prox;
+                //}
                 myHttpWebRequest.Method = method;
-                myHttpWebRequest.Headers.Add("Accept-Encoding", "gzip, deflate");
-                myHttpWebRequest.Headers.Add("Accept-Language", "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
+                myHttpWebRequest.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+                myHttpWebRequest.Headers.Add("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
                 myHttpWebRequest.CookieContainer = cc;
                 if (!string.IsNullOrEmpty(strArgs)&&method.ToUpper()=="POST")
                 {
@@ -132,7 +109,7 @@ namespace My12306
                     PostStream.Close();
                 }
                 HttpWebResponse response = null;
-                System.IO.StreamReader sr = null;
+                StreamReader sr = null;
                 response = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 
                 if (myHttpWebRequest.CookieContainer != null)
@@ -146,16 +123,16 @@ namespace My12306
                 {
                     strResult = "302";
                 }
-                else if (ce.ToLower() == "gzip")
-                {
-                    GZipStream gzip = new GZipStream(streamReceive, CompressionMode.Decompress);
-                    using (StreamReader reader = new StreamReader(gzip, Encoding.UTF8))
-                    {
-                        strResult = reader.ReadToEnd();
-                        gzip.Close();
-                        reader.Close();
-                    }
-                }
+                //else if (ce.ToLower() == "gzip")
+                //{
+                //    GZipStream gzip = new GZipStream(streamReceive, CompressionMode.Decompress);
+                //    using (StreamReader reader = new StreamReader(gzip, Encoding.UTF8))
+                //    {
+                //        strResult = reader.ReadToEnd();
+                //        gzip.Close();
+                //        reader.Close();
+                //    }
+                //}
                 else if (response.ContentType.Contains("image"))
                 {
                     MemoryStream ImgStream = new MemoryStream();
@@ -165,7 +142,7 @@ namespace My12306
                 }
                 else
                 {
-                    sr = new System.IO.StreamReader(streamReceive, Encoding.UTF8);
+                    sr = new StreamReader(streamReceive, Encoding.UTF8);
                     strResult = sr.ReadToEnd();
                     sr.Close();
                 }
@@ -174,19 +151,11 @@ namespace My12306
                
                 string jsessionid = cc.GetCookies(new Uri(strURL))["JSESSIONID"].Value;
 
-                //if (strArgs.Contains("downloadType=mobile"))
-                //{
-                //    cc = null;
-                //    cc = new CookieContainer();
-                //}
                 return jsessionid+"|" + strResult;
             }
             catch (Exception ex)
             {
-                //return string.Empty;
-                throw new Exception(ex.Message);
-                //File.AppendAllText(Application.StartupPath.Substring(0, Application.StartupPath.LastIndexOf("\\")) + "\\MMerror.log", DateTime.Now.ToString() + "  " +strURL+","+ ex.Message + "\r\n");
-                //System.Windows.Forms.MessageBox.Show("出现异常："+ex.Message);
+                throw new Exception(ex.Message);           
             }
             
         }
