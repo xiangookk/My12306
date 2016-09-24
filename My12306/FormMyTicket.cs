@@ -184,22 +184,24 @@ namespace My12306
                 return;
             }
             randCode = randCode.Substring(0,randCode.Length - 1);
+            //登陆初始化
+            strURL = "https://kyfw.12306.cn/otn/login/init";
+            request.PostData(strURL, "", "get");
 
-        
-            //check randcode         
+            //验证码验证        
             strArgs = "randCode=" + HttpUtility.UrlEncode(randCode) +"&rand=sjrand";
             strURL = "https://kyfw.12306.cn/otn/passcodeNew/checkRandCodeAnsyn";
             string resCode = request.PostData(strURL, strArgs, "post");
             resCode = resCode.Substring(resCode.IndexOf("|") + 1);
             JObject joCode = JObject.Parse(resCode);
-            if(joCode["data"]["result"].ToString()=="0")
+            if(joCode["data"]["result"].ToString()!="1")
             {
                 lbMsg.Text = "验证码错误！请重新点击。";
                 Getpic();
                 return;
             }
            
-            lbMsg.Text = "登陆中..";          
+            lbMsg.Text = "验证通过，登陆中..";          
             //login           
             strURL = "https://kyfw.12306.cn/otn/login/loginAysnSuggest";
             strArgs = "loginUserDTO.user_name=" + txtLoginName.Text.Trim()+ "&userDTO.password=" + txtPassword.Text.Trim()+"&randCode=" + HttpUtility.UrlEncode(randCode);
@@ -209,10 +211,10 @@ namespace My12306
             {
                 resC = request.PostData(strURL, strArgs, "post");
                 resC = resC.Substring(resC.IndexOf("|") + 1);
-                JObject joC = JObject.Parse(resC);
-                if (joC["data"]["loginCheck"].ToString() == "Y")  
+                JObject joC = JObject.Parse(resC);             
+                if (joC["data"] != null&&joC["data"]["loginCheck"].ToString() == "Y")  
                 { 
-                    lbMsg.Text = "登陆成功！";//+u_name;
+                    lbMsg.Text = "登陆成功！";
                     
                     gboLogin.Enabled = false;
                     gboLinkMan.Enabled = true;
@@ -223,47 +225,13 @@ namespace My12306
                     //    InternetSetCookie("https://" + cookie.Domain.ToString(), cookie.Name.ToString(), cookie.Value.ToString()+ ";expires=Sun,22-Feb-2099 00:00:00 GMT");//
                     //}
                     //Process.Start("IExplore.exe", "https://dynamic.12306.cn/otsweb/");
-                }
-                //else if (resC.Contains("您的用户已经被锁定"))
-                //{
-                //    lbMsg.Text = "您的用户已经被锁定,请明天再试！";
-                //    txtPassword.Text = "";
-                //    randCode = "";
-                //    Getpic();
-                //}
-                //else if (resC.Contains("当前访问用户过多"))
-                //{
-                //    lbMsg.Text = "当前访问用户过多，请稍后重试！";
-                //    txtPassword.Text = "";
-                //    randCode = "";
-                //    Getpic();
-                //}
-                //else if (resC.Contains("请输入正确的验证码"))
-                //{
-                //    lbMsg.Text = "验证码错误,请重新输入！";
-                //   // txtPassword.Text = "";
-                //    randCode = "";
-                //    Getpic();
-                //}
-                //else if(resC.Substring(resC.IndexOf("var message = \"")+15, 6) == "登录名不存在")
-                //{
-                //    lbMsg.Text = "登录名不存在!";
-                //    txtLoginName.Text = "";
-                //    txtPassword.Text = "";
-                //    randCode = "";
-                //    Getpic();
-                //}
-                //else if (resC.Substring(resC.IndexOf("var message = \"")+15, 6) == "密码输入错误")
-                //{
-                //    lbMsg.Text = resC.Substring(resC.IndexOf("var message = \"") + 15, 15);
-                //    txtPassword.Text = "";
-                //    randCode = "";
-                //    Getpic();
-                //}
+                }              
                 else
                 {
                     lbMsg.Text = joC["messages"].First.ToString();
-                    gboLogin.Enabled = false;
+                    //gboLogin.Enabled = false;      
+                    btnLogin.Enabled = false;
+                    btnLogin.BackColor = Color.Gray;
                 }
             }
             catch(Exception e0)

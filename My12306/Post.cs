@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.Xml;
 using System.Security.Cryptography;
+using System.IO.Compression;
 
 namespace My12306
 {
@@ -123,16 +124,16 @@ namespace My12306
                 {
                     strResult = "302";
                 }
-                //else if (ce.ToLower() == "gzip")
-                //{
-                //    GZipStream gzip = new GZipStream(streamReceive, CompressionMode.Decompress);
-                //    using (StreamReader reader = new StreamReader(gzip, Encoding.UTF8))
-                //    {
-                //        strResult = reader.ReadToEnd();
-                //        gzip.Close();
-                //        reader.Close();
-                //    }
-                //}
+                else if (ce.ToLower() == "gzip")
+                {
+                    GZipStream gzip = new GZipStream(streamReceive, CompressionMode.Decompress);
+                    using (StreamReader reader = new StreamReader(gzip, Encoding.UTF8))
+                    {
+                        strResult = reader.ReadToEnd();
+                        gzip.Close();
+                        reader.Close();
+                    }
+                }
                 else if (response.ContentType.Contains("image"))
                 {
                     MemoryStream ImgStream = new MemoryStream();
