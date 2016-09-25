@@ -37,10 +37,21 @@
             this.btnLogin = new System.Windows.Forms.Button();
             this.picCode = new System.Windows.Forms.PictureBox();
             this.gboLogin = new System.Windows.Forms.GroupBox();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.lbMsg = new System.Windows.Forms.Label();
             this.gboLinkMan = new System.Windows.Forms.GroupBox();
+            this.checkBox20 = new System.Windows.Forms.CheckBox();
+            this.checkBox19 = new System.Windows.Forms.CheckBox();
+            this.checkBox18 = new System.Windows.Forms.CheckBox();
+            this.checkBox17 = new System.Windows.Forms.CheckBox();
+            this.checkBox16 = new System.Windows.Forms.CheckBox();
+            this.checkBox15 = new System.Windows.Forms.CheckBox();
+            this.checkBox14 = new System.Windows.Forms.CheckBox();
+            this.checkBox13 = new System.Windows.Forms.CheckBox();
+            this.checkBox12 = new System.Windows.Forms.CheckBox();
+            this.checkBox11 = new System.Windows.Forms.CheckBox();
             this.checkBox10 = new System.Windows.Forms.CheckBox();
             this.checkBox9 = new System.Windows.Forms.CheckBox();
             this.btnPassengerOK = new System.Windows.Forms.Button();
@@ -140,7 +151,7 @@
             // 
             this.btnLogin.BackColor = System.Drawing.Color.SteelBlue;
             this.btnLogin.ForeColor = System.Drawing.Color.White;
-            this.btnLogin.Location = new System.Drawing.Point(71, 282);
+            this.btnLogin.Location = new System.Drawing.Point(71, 271);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(99, 39);
             this.btnLogin.TabIndex = 6;
@@ -160,6 +171,7 @@
             // 
             // gboLogin
             // 
+            this.gboLogin.Controls.Add(this.listView1);
             this.gboLogin.Controls.Add(this.button1);
             this.gboLogin.Controls.Add(this.label4);
             this.gboLogin.Controls.Add(this.lbMsg);
@@ -177,6 +189,16 @@
             this.gboLogin.TabStop = false;
             this.gboLogin.Text = "❶登陆";
             // 
+            // listView1
+            // 
+            this.listView1.CheckBoxes = true;
+            this.listView1.Location = new System.Drawing.Point(6, 348);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(310, 133);
+            this.listView1.TabIndex = 100;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.List;
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(247, 63);
@@ -193,7 +215,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.label4.Location = new System.Drawing.Point(42, 331);
+            this.label4.Location = new System.Drawing.Point(42, 313);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(171, 17);
             this.label4.TabIndex = 9;
@@ -211,6 +233,16 @@
             // 
             // gboLinkMan
             // 
+            this.gboLinkMan.Controls.Add(this.checkBox20);
+            this.gboLinkMan.Controls.Add(this.checkBox19);
+            this.gboLinkMan.Controls.Add(this.checkBox18);
+            this.gboLinkMan.Controls.Add(this.checkBox17);
+            this.gboLinkMan.Controls.Add(this.checkBox16);
+            this.gboLinkMan.Controls.Add(this.checkBox15);
+            this.gboLinkMan.Controls.Add(this.checkBox14);
+            this.gboLinkMan.Controls.Add(this.checkBox13);
+            this.gboLinkMan.Controls.Add(this.checkBox12);
+            this.gboLinkMan.Controls.Add(this.checkBox11);
             this.gboLinkMan.Controls.Add(this.checkBox10);
             this.gboLinkMan.Controls.Add(this.checkBox9);
             this.gboLinkMan.Controls.Add(this.btnPassengerOK);
@@ -231,13 +263,123 @@
             this.gboLinkMan.TabStop = false;
             this.gboLinkMan.Text = "❷选择乘客(暂时最大10个)";
             // 
+            // checkBox20
+            // 
+            this.checkBox20.AutoSize = true;
+            this.checkBox20.Location = new System.Drawing.Point(361, 124);
+            this.checkBox20.Name = "checkBox20";
+            this.checkBox20.Size = new System.Drawing.Size(84, 16);
+            this.checkBox20.TabIndex = 19;
+            this.checkBox20.Text = "checkBox20";
+            this.checkBox20.UseVisualStyleBackColor = true;
+            this.checkBox20.Visible = false;
+            // 
+            // checkBox19
+            // 
+            this.checkBox19.AutoSize = true;
+            this.checkBox19.Location = new System.Drawing.Point(361, 100);
+            this.checkBox19.Name = "checkBox19";
+            this.checkBox19.Size = new System.Drawing.Size(84, 16);
+            this.checkBox19.TabIndex = 18;
+            this.checkBox19.Text = "checkBox19";
+            this.checkBox19.UseVisualStyleBackColor = true;
+            this.checkBox19.Visible = false;
+            // 
+            // checkBox18
+            // 
+            this.checkBox18.AutoSize = true;
+            this.checkBox18.Location = new System.Drawing.Point(361, 75);
+            this.checkBox18.Name = "checkBox18";
+            this.checkBox18.Size = new System.Drawing.Size(84, 16);
+            this.checkBox18.TabIndex = 17;
+            this.checkBox18.Text = "checkBox18";
+            this.checkBox18.UseVisualStyleBackColor = true;
+            this.checkBox18.Visible = false;
+            // 
+            // checkBox17
+            // 
+            this.checkBox17.AutoSize = true;
+            this.checkBox17.Location = new System.Drawing.Point(361, 49);
+            this.checkBox17.Name = "checkBox17";
+            this.checkBox17.Size = new System.Drawing.Size(84, 16);
+            this.checkBox17.TabIndex = 16;
+            this.checkBox17.Text = "checkBox17";
+            this.checkBox17.UseVisualStyleBackColor = true;
+            this.checkBox17.Visible = false;
+            // 
+            // checkBox16
+            // 
+            this.checkBox16.AutoSize = true;
+            this.checkBox16.Location = new System.Drawing.Point(361, 24);
+            this.checkBox16.Name = "checkBox16";
+            this.checkBox16.Size = new System.Drawing.Size(84, 16);
+            this.checkBox16.TabIndex = 15;
+            this.checkBox16.Text = "checkBox16";
+            this.checkBox16.UseVisualStyleBackColor = true;
+            this.checkBox16.Visible = false;
+            // 
+            // checkBox15
+            // 
+            this.checkBox15.AutoSize = true;
+            this.checkBox15.Location = new System.Drawing.Point(245, 124);
+            this.checkBox15.Name = "checkBox15";
+            this.checkBox15.Size = new System.Drawing.Size(84, 16);
+            this.checkBox15.TabIndex = 14;
+            this.checkBox15.Text = "checkBox15";
+            this.checkBox15.UseVisualStyleBackColor = true;
+            this.checkBox15.Visible = false;
+            // 
+            // checkBox14
+            // 
+            this.checkBox14.AutoSize = true;
+            this.checkBox14.Location = new System.Drawing.Point(245, 100);
+            this.checkBox14.Name = "checkBox14";
+            this.checkBox14.Size = new System.Drawing.Size(84, 16);
+            this.checkBox14.TabIndex = 13;
+            this.checkBox14.Text = "checkBox14";
+            this.checkBox14.UseVisualStyleBackColor = true;
+            this.checkBox14.Visible = false;
+            // 
+            // checkBox13
+            // 
+            this.checkBox13.AutoSize = true;
+            this.checkBox13.Location = new System.Drawing.Point(245, 75);
+            this.checkBox13.Name = "checkBox13";
+            this.checkBox13.Size = new System.Drawing.Size(84, 16);
+            this.checkBox13.TabIndex = 12;
+            this.checkBox13.Text = "checkBox13";
+            this.checkBox13.UseVisualStyleBackColor = true;
+            this.checkBox13.Visible = false;
+            // 
+            // checkBox12
+            // 
+            this.checkBox12.AutoSize = true;
+            this.checkBox12.Location = new System.Drawing.Point(245, 50);
+            this.checkBox12.Name = "checkBox12";
+            this.checkBox12.Size = new System.Drawing.Size(84, 16);
+            this.checkBox12.TabIndex = 11;
+            this.checkBox12.Text = "checkBox12";
+            this.checkBox12.UseVisualStyleBackColor = true;
+            this.checkBox12.Visible = false;
+            // 
+            // checkBox11
+            // 
+            this.checkBox11.AutoSize = true;
+            this.checkBox11.Location = new System.Drawing.Point(245, 24);
+            this.checkBox11.Name = "checkBox11";
+            this.checkBox11.Size = new System.Drawing.Size(84, 16);
+            this.checkBox11.TabIndex = 10;
+            this.checkBox11.Text = "checkBox11";
+            this.checkBox11.UseVisualStyleBackColor = true;
+            this.checkBox11.Visible = false;
+            // 
             // checkBox10
             // 
             this.checkBox10.AutoSize = true;
             this.checkBox10.Location = new System.Drawing.Point(138, 124);
             this.checkBox10.Name = "checkBox10";
             this.checkBox10.Size = new System.Drawing.Size(84, 16);
-            this.checkBox10.TabIndex = 11;
+            this.checkBox10.TabIndex = 9;
             this.checkBox10.Text = "checkBox10";
             this.checkBox10.UseVisualStyleBackColor = true;
             this.checkBox10.Visible = false;
@@ -248,7 +390,7 @@
             this.checkBox9.Location = new System.Drawing.Point(21, 124);
             this.checkBox9.Name = "checkBox9";
             this.checkBox9.Size = new System.Drawing.Size(78, 16);
-            this.checkBox9.TabIndex = 10;
+            this.checkBox9.TabIndex = 8;
             this.checkBox9.Text = "checkBox9";
             this.checkBox9.UseVisualStyleBackColor = true;
             this.checkBox9.Visible = false;
@@ -260,7 +402,7 @@
             this.btnPassengerOK.Location = new System.Drawing.Point(69, 175);
             this.btnPassengerOK.Name = "btnPassengerOK";
             this.btnPassengerOK.Size = new System.Drawing.Size(75, 26);
-            this.btnPassengerOK.TabIndex = 9;
+            this.btnPassengerOK.TabIndex = 99;
             this.btnPassengerOK.Text = "确 定";
             this.btnPassengerOK.UseVisualStyleBackColor = false;
             this.btnPassengerOK.Click += new System.EventHandler(this.btnSelectOK_Click);
@@ -279,7 +421,7 @@
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(21, 99);
+            this.checkBox7.Location = new System.Drawing.Point(21, 100);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(78, 16);
             this.checkBox7.TabIndex = 6;
@@ -742,7 +884,7 @@
             this.MaximizeBox = false;
             this.Name = "FormMyTicket";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "自动刷票";
+            this.Text = "h ";
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picCode)).EndInit();
             this.gboLogin.ResumeLayout(false);
@@ -822,5 +964,16 @@
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lbMsg;
+        private System.Windows.Forms.CheckBox checkBox20;
+        private System.Windows.Forms.CheckBox checkBox19;
+        private System.Windows.Forms.CheckBox checkBox18;
+        private System.Windows.Forms.CheckBox checkBox17;
+        private System.Windows.Forms.CheckBox checkBox16;
+        private System.Windows.Forms.CheckBox checkBox15;
+        private System.Windows.Forms.CheckBox checkBox14;
+        private System.Windows.Forms.CheckBox checkBox13;
+        private System.Windows.Forms.CheckBox checkBox12;
+        private System.Windows.Forms.CheckBox checkBox11;
+        private System.Windows.Forms.ListView listView1;
     }
 }

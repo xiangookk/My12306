@@ -14,20 +14,16 @@ using System.Net;
 using System.Diagnostics;
 
 namespace My12306
-{
+{   
     public partial class FormMyTicket : Form
-    {
+    {             
         public FormMyTicket()
         {
             InitializeComponent();
         }
         RequestClass request = new RequestClass();
         string strURL = "";
-        string strArgs = string.Empty;
-        string strReferer = "https://dynamic.12306.cn/otsweb/loginAction.do?method=init";
-        string code = "utf-8";
-        string method = "post";
-        string dlip = "";
+        string strArgs = string.Empty; 
         string randCode = "";
 
         string loginRand = "";
@@ -51,6 +47,7 @@ namespace My12306
         bool isRun = false;
         private void FormMain_Load(object sender, EventArgs e)
         {
+           
             FormMyTicket.CheckForIllegalCrossThreadCalls = false;
             Thread th = new Thread(loading);
             th.IsBackground = true;
@@ -218,7 +215,7 @@ namespace My12306
                     
                     gboLogin.Enabled = false;
                     gboLinkMan.Enabled = true;
-                    //GetLinkMan();
+                    GetLinkMan();
 
                     //foreach (Cookie cookie in post.cc.GetCookies(new Uri(strURL)))
                     //{
@@ -240,27 +237,52 @@ namespace My12306
         //获取联系人
         private void GetLinkMan()
         { 
-            method = "get";
-            strArgs = "";
-            strReferer = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=init";
-            strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=getpassengerJson";
+            //第一页
+            strArgs = "_json_att=";         
+            strURL = "https://kyfw.12306.cn/otn/passengers/init";
             string resLR;
             try
             {
-                resLR = request.PostData(strURL, strArgs, "get");
+                resLR = request.PostData(strURL, strArgs, "post");
                 string retLR = resLR.Substring(resLR.IndexOf('|') + 1);
-                JObject o = JObject.Parse(retLR);
-                CheckBox cbx = checkBox1;
 
-                while (o["passengerJson"].HasValues)
+                string beginStr = "var passengers=";
+                string endStr = "var pageSize =";
+                retLR = retLR.Substring(retLR.IndexOf(beginStr)+beginStr.Length);
+                retLR = retLR.Substring(0, retLR.IndexOf(endStr)-3);
+
+                JArray arrLM =JArray.Parse(retLR);
+                //第二页
+                strURL = "https://kyfw.12306.cn/otn/passengers/query";
+                strArgs = "pageIndex=2&pageSize=10";
+                resLR = request.PostData(strURL, strArgs, "post");
+                retLR = resLR.Substring(resLR.IndexOf('|') + 1);
+                JObject oLM = JObject.Parse(retLR);
+                //合并到第一页
+                foreach(JObject obj in oLM["data"]["datas"])
                 {
-                    cbx.Text = (string)o["passengerJson"].First["passenger_name"];
-                    cbx.Tag = o["passengerJson"].First;
+                    arrLM.Add(obj);
+                }
+
+                foreach (JObject obj in arrLM)
+                {
+                    ListViewItem item=new ListViewItem ();
+                    item.Tag = obj;
+                    item.Text = (string)obj["passenger_name"] + " " + (string)obj["passenger_id_no"] + " " + (string)obj["passenger_type_name"];
+                    listView1.Items.Add(item);
+                }
+                    
+                CheckBox cbx = checkBox1;            
+                while (arrLM.HasValues)
+                {
+                    cbx.Text = (string)arrLM.First["passenger_name"];
+                    cbx.Tag = arrLM.First;
                     cbx.Visible = true;
-                    cbx = (CheckBox)gboLinkMan.GetNextControl(cbx, true);
-                    if (cbx == null)
+                    Control ctrl= gboLinkMan.GetNextControl(cbx, true);
+                    if(ctrl.GetType()!= typeof(CheckBox))                  
                         break;
-                    o["passengerJson"].First.Remove();
+                    cbx = (CheckBox)ctrl;
+                    arrLM.First.Remove();
                 }
             }
             catch (Exception e0)
@@ -271,6 +293,30 @@ namespace My12306
         //确定联系人
         private void btnSelectOK_Click(object sender, EventArgs e)
         {
+            foreach(ListViewItem item in listView1.CheckedItems)
+            {
+                JObject jo = (JObject)item.Tag;
+                Passenger psg = new Passenger();
+                //psg.index = n;
+                //psg.first_letter = jo["first_letter"].ToString();
+                psg.isUserSelf = jo["isUserSelf"].ToString();
+                psg.mobile_no = jo["mobile_no"].ToString();
+                //psg.old_passenger_id_no = jo["old_passenger_id_no"].ToString();
+                //psg.old_passenger_id_type_code = jo["old_passenger_id_type_code"].ToString();
+                //psg.old_passenger_name = jo["old_passenger_name"].ToString();
+                //psg.passenger_flag = jo["passenger_flag"].ToString();
+                psg.passenger_id_no = jo["passenger_id_no"].ToString();
+                psg.passenger_id_type_code = jo["passenger_id_type_code"].ToString();
+                psg.passenger_id_type_name = jo["passenger_id_type_name"].ToString();
+                psg.passenger_name = jo["passenger_name"].ToString();
+                psg.passenger_type = jo["passenger_type"].ToString();
+                psg.passenger_type_name = jo["passenger_type_name"].ToString();
+                //psg.recordCount = jo["recordCount"].ToString();
+                //passengers.Add(psg);
+            }
+
+            //return;
+
             CheckBox cbx;
             int n = 0;
             for (int i = 0; i < gboLinkMan.Controls.Count; i++)
@@ -282,21 +328,21 @@ namespace My12306
                     {
                         JObject jo = (JObject)cbx.Tag;
                         Passenger psg = new Passenger();
-                        psg.index = n;
-                        psg.first_letter = jo["first_letter"].ToString();
+                        //psg.index = n;
+                        //psg.first_letter = jo["first_letter"].ToString();
                         psg.isUserSelf = jo["isUserSelf"].ToString();
                         psg.mobile_no = jo["mobile_no"].ToString();
-                        psg.old_passenger_id_no = jo["old_passenger_id_no"].ToString();
-                        psg.old_passenger_id_type_code = jo["old_passenger_id_type_code"].ToString();
-                        psg.old_passenger_name = jo["old_passenger_name"].ToString();
-                        psg.passenger_flag = jo["passenger_flag"].ToString();
+                        //psg.old_passenger_id_no = jo["old_passenger_id_no"].ToString();
+                        //psg.old_passenger_id_type_code = jo["old_passenger_id_type_code"].ToString();
+                        //psg.old_passenger_name = jo["old_passenger_name"].ToString();
+                        //psg.passenger_flag = jo["passenger_flag"].ToString();
                         psg.passenger_id_no = jo["passenger_id_no"].ToString();
                         psg.passenger_id_type_code = jo["passenger_id_type_code"].ToString();
                         psg.passenger_id_type_name = jo["passenger_id_type_name"].ToString();
                         psg.passenger_name = jo["passenger_name"].ToString();
                         psg.passenger_type = jo["passenger_type"].ToString();
                         psg.passenger_type_name = jo["passenger_type_name"].ToString();
-                        psg.recordCount = jo["recordCount"].ToString();
+                        //psg.recordCount = jo["recordCount"].ToString();
                         passengers.Add(psg);
                     }
                     n++;
@@ -935,8 +981,6 @@ namespace My12306
         {
             Getpic();
         }
-
-        int tabindex = 101;
         private void picCode_MouseClick(object sender, MouseEventArgs e)
         {
             PictureBox pb = sender as PictureBox;
@@ -944,6 +988,5 @@ namespace My12306
             randCode += e.X+",";
             randCode += (e.Y-30)+",";
         }
-
     }
 }
