@@ -1,3 +1,5 @@
 /My12306/bin/
 /My12306/obj/
 *.suo
+.vscode
+.vs
