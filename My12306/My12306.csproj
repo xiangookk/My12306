@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="0238.ico" />
+    <Content Include="message.wav" />
     <Content Include="station_name.js" />
   </ItemGroup>
   <ItemGroup>

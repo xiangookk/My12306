@@ -26,8 +26,8 @@ namespace My12306
         string strArgs = string.Empty; 
         string randCode = "";
 
-        string loginRand = "";
-        string randError = "";
+        //string loginRand = "";
+        //string randError = "";
 
         string[,] stations = null; //全部车站名称
        // string[,] ststrainall = null;//根据出发地和到达地对应的车次
@@ -43,7 +43,7 @@ namespace My12306
         string htmlTOKEN="";
         WebBrowser wbrws;
         HtmlDocument hd;
-        HtmlElement he;
+        //HtmlElement he;
         bool isRun = false;
         private void FormMain_Load(object sender, EventArgs e)
         {
@@ -53,6 +53,8 @@ namespace My12306
             th.IsBackground = true;
             th.Start();
 
+            txtLoginName.Text = "xiangookk";
+            txtPassword.Text = "86641813ok";
             //wbrws = new WebBrowser();
             //wbrws.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(getTag);
         }
@@ -84,18 +86,18 @@ namespace My12306
             //获取验证码
             Getpic();
             //绑定席别      
-            listTrain = new System.Collections.ArrayList();
-            for (int i = 0; i < seats.GetLength(0); i++)
-            {
-                ListItem listItem = new ListItem();
-                listItem.TextField = seats[i,0];
-                listItem.ValueField = seats[i,2];
-                listTrain.Add(listItem);
-            }
-            cboSeat.DataSource = listTrain;
-            cboSeat.DisplayMember = "TextField";
-            cboSeat.ValueMember = "ValueField";
-            cboSeat.SelectedIndex = 0;
+            //listTrain = new System.Collections.ArrayList();
+            //for (int i = 0; i < seats.GetLength(0); i++)
+            //{
+            //    ListItem listItem = new ListItem();
+            //    listItem.TextField = seats[i,0];
+            //    listItem.ValueField = seats[i,2];
+            //    listTrain.Add(listItem);
+            //}
+            //cboSeat.DataSource = listTrain;
+            //cboSeat.DisplayMember = "TextField";
+            //cboSeat.ValueMember = "ValueField";
+            //cboSeat.SelectedIndex = 0;
             //加载所有站名信息
             string stationName = Properties.Resources.station_name;
             string[] temp1 = stationName.Split('@');
@@ -153,7 +155,6 @@ namespace My12306
         //获取提交定单验证图片
         private void GetSubpic()
         {
-            method = "get";
             strArgs = "";
             strURL = "https://dynamic.12306.cn/otsweb/passCodeAction.do?rand=randp";
             string resImg = request.PostData(strURL, strArgs, "get");
@@ -198,8 +199,9 @@ namespace My12306
                 return;
             }
            
-            lbMsg.Text = "验证通过，登陆中..";          
+            lbMsg.Text = "验证通过，登陆中..";
             //login           
+            Thread.Sleep(1000);//延迟一秒，否则容易出现系统繁忙
             strURL = "https://kyfw.12306.cn/otn/login/loginAysnSuggest";
             strArgs = "loginUserDTO.user_name=" + txtLoginName.Text.Trim()+ "&userDTO.password=" + txtPassword.Text.Trim()+"&randCode=" + HttpUtility.UrlEncode(randCode);
            
@@ -215,26 +217,20 @@ namespace My12306
                     
                     gboLogin.Enabled = false;
                     gboLinkMan.Enabled = true;
-                    GetLinkMan();
-
-                    //foreach (Cookie cookie in post.cc.GetCookies(new Uri(strURL)))
-                    //{
-                    //    InternetSetCookie("https://" + cookie.Domain.ToString(), cookie.Name.ToString(), cookie.Value.ToString()+ ";expires=Sun,22-Feb-2099 00:00:00 GMT");//
-                    //}
-                    //Process.Start("IExplore.exe", "https://dynamic.12306.cn/otsweb/");
+                    listView1.Enabled = true;
+                    GetLinkMan();   
                 }              
                 else
                 {
                     lbMsg.Text = joC["messages"].First.ToString();
-                    //gboLogin.Enabled = false;      
-                    btnLogin.Enabled = false;
-                    btnLogin.BackColor = Color.Gray;
                 }
             }
             catch(Exception e0)
             { MessageBox.Show(e0.Message); }
         }
-        //获取联系人
+        /// <summary>
+        /// 获取联系人
+        /// </summary>
         private void GetLinkMan()
         { 
             //第一页
@@ -263,15 +259,15 @@ namespace My12306
                 {
                     arrLM.Add(obj);
                 }
-
-                foreach (JObject obj in arrLM)
-                {
-                    ListViewItem item=new ListViewItem ();
-                    item.Tag = obj;
-                    item.Text = (string)obj["passenger_name"] + " " + (string)obj["passenger_id_no"] + " " + (string)obj["passenger_type_name"];
-                    listView1.Items.Add(item);
-                }
-                    
+                //方法一
+                //foreach (JObject obj in arrLM)
+                //{
+                //    ListViewItem item=new ListViewItem ();
+                //    item.Tag = obj;
+                //    item.Text = (string)obj["passenger_name"] + " " + (string)obj["passenger_id_no"] + " " + (string)obj["passenger_type_name"];
+                //    listView1.Items.Add(item);
+                //}
+                //方法二
                 CheckBox cbx = checkBox1;            
                 while (arrLM.HasValues)
                 {
@@ -293,6 +289,7 @@ namespace My12306
         //确定联系人
         private void btnSelectOK_Click(object sender, EventArgs e)
         {
+            /*
             foreach(ListViewItem item in listView1.CheckedItems)
             {
                 JObject jo = (JObject)item.Tag;
@@ -316,9 +313,9 @@ namespace My12306
             }
 
             //return;
-
+            */
             CheckBox cbx;
-            int n = 0;
+            //int n = 0;
             for (int i = 0; i < gboLinkMan.Controls.Count; i++)
             {
                 if (gboLinkMan.Controls[i] is CheckBox)
@@ -345,7 +342,7 @@ namespace My12306
                         //psg.recordCount = jo["recordCount"].ToString();
                         passengers.Add(psg);
                     }
-                    n++;
+                   // n++;
                 }
             }
             if (passengers.Count == 0)
@@ -360,6 +357,7 @@ namespace My12306
         //根据出发地和到达地对应的车次
         private void cboTrainNum_Click(object sender, EventArgs e)
         {
+            this.Cursor = Cursors.WaitCursor;
             if (string.IsNullOrEmpty(txtFrom.Text.Trim()) || string.IsNullOrEmpty(txtTo.Text.Trim()))
             {
                 MessageBox.Show("请填写出发地和到达地！"); return;
@@ -372,10 +370,8 @@ namespace My12306
             {
                 MessageBox.Show("请填写正确的出发地和到达地！"); return;
             }
-            method = "post";
-            strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
-            strArgs = "date="+dtpDate.Value.ToString("yyyy-MM-dd")+"&fromstation="+fromletter+"&tostation="+toletter+"&starttime=00%3A00--24%3A00";
-            strURL = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=queryststrainall";
+
+            strURL = "https://kyfw.12306.cn/otn/leftTicket/queryA?leftTicketDTO.train_date=" + dtpDate.Value.ToString("yyyy-MM-dd") + "&leftTicketDTO.from_station=SZQ&leftTicketDTO.to_station=WHN&purpose_codes=ADULT";
             string resSTA;//queryststrainall
             try
             {
@@ -383,23 +379,29 @@ namespace My12306
                 string retSTA = resSTA.Substring(resSTA.IndexOf('|') + 1);
                 if (string.IsNullOrEmpty(retSTA))
                 { MessageBox.Show("没有对应车次！"); return; }
-                JArray ja = JArray.Parse(retSTA);
+
+                JObject jo = JObject.Parse(retSTA);
+                JArray  ja = (JArray)jo["data"];
                 listTrain = new System.Collections.ArrayList();
                 for (int i = 0; i < ja.Count;i++ )
                 {
                     ListItem listItem = new ListItem();
-                    listItem.TextField = ja[i]["value"] + "(" + ja[i]["start_station_name"] + ja[i]["start_time"] + "→" + ja[i]["end_station_name"] + ja[i]["end_time"] + ")";
-                    listItem.ValueField = ja[i]["id"].ToString();
+                    JObject jvo = (JObject)ja[i]["queryLeftNewDTO"];
+                    listItem.TextField = jvo["station_train_code"] + "(" + jvo["from_station_name"] + jvo["start_time"] + "→" + jvo["to_station_name"] + jvo["arrive_time"] + ")";
+                    listItem.ValueField = jvo["train_no"].ToString()+"|"+ jvo["seat_types"].ToString();
                     listTrain.Add(listItem);
                 }
                 cboTrainNum.DataSource = listTrain;
                 cboTrainNum.DisplayMember = "TextField";
                 cboTrainNum.ValueMember = "ValueField";
+                
             }
             catch (Exception e0)
-            {
+            {              
                 MessageBox.Show(e0.Message);
             }
+            finally
+            { this.Cursor = Cursors.Default; }
         }
         //列表项对象
         public class ListItem
@@ -445,19 +447,20 @@ namespace My12306
             }         
             for (int i = 0; i < programs.GetLength(0)&&isRun; i++)
             {
+            
                 if (programs[i, 0] != null)
                 {
                     toolStripStatusLabel1.Text = "正在查询余票...";
                     //querySingleAction Init  
-                    method = "get";
+                   
                     strArgs = "";
-                    strReferer = "https://dynamic.12306.cn/otsweb/loginAction.do?method=login";
+                   
                     strURL = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
                     string resQSAI = request.PostData(strURL, strArgs, "get");
                     //ueryLeftTicket
-                    method = "get";
+                   
                     strArgs = "";
-                    strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
+                   
                     strURL = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=queryLeftTicket&orderRequest.train_date=" + programs[i, 3] + "&orderRequest.from_station_telecode=" + fromletter + "&orderRequest.to_station_telecode=" + toletter + "&orderRequest.train_no=" + programs[i, 4] + "&trainPassType=QB&trainClass=QB%23D%23Z%23T%23K%23QT%23&includeStudent=00&seatTypeAndNum=&orderRequest.start_time_str=" + programs[i, 1];
                     string resLT;//queryLeftTicket
                     try
@@ -506,16 +509,16 @@ namespace My12306
 
                                 //string confirmInit = 
                                 //submutOrderRequest   
-                                method = "post";
-                                strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
+                                //method = "post";
+                                //strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
                                 strURL = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=submutOrderRequest";
                                 strArgs = "station_train_code=" + programs[i, 11] + "&train_date=" + programs[i, 3] + "&seattype_num=&from_station_telecode=" + SubOrdArgs[4] + "&to_station_telecode=" + SubOrdArgs[5] + "&include_student=00&from_station_telecode_name=" + HttpUtility.UrlEncode(programs[i, 12], Encoding.UTF8).ToUpper() + "&to_station_telecode_name=" + HttpUtility.UrlEncode(programs[i, 13], Encoding.UTF8).ToUpper() + "&round_train_date=" + programs[i, 3] + "&round_start_time_str=00%3A00--24%3A00&single_round_type=1&train_pass_type=QB&train_class_arr=QB%23D%23Z%23T%23K%23QT%23&start_time_str=00%3A00--24%3A00&lishi=" + HttpUtility.UrlEncode(SubOrdArgs[1], Encoding.UTF8).ToUpper() + "&train_start_time=" + HttpUtility.UrlEncode(SubOrdArgs[2], Encoding.UTF8).ToUpper() + "&trainno4=" + SubOrdArgs[3] + "&arrive_time=" + HttpUtility.UrlEncode(SubOrdArgs[6], Encoding.UTF8).ToUpper() + "&from_station_name=" + HttpUtility.UrlEncode(SubOrdArgs[7], Encoding.UTF8).ToUpper() + "&to_station_name=" + HttpUtility.UrlEncode(SubOrdArgs[8], Encoding.UTF8).ToUpper() + "&from_station_no=" + SubOrdArgs[9] + "&to_station_no=" + SubOrdArgs[10] + "&ypInfoDetail=" + SubOrdArgs[11] + "&mmStr=" + SubOrdArgs[12] + "&locationCode=" + SubOrdArgs[13];
                                 string resSOR = request.PostData(strURL, strArgs, "get");
 
                                 //confirmInit
-                                method = "get";
+                                //method = "get";
                                 strArgs = "";
-                                strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
+                                //strReferer = "https://dynamic.12306.cn/otsweb/order/querySingleAction.do?method=init";
                                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=init";
                                 string resCI = request.PostData(strURL, strArgs, "get");
                                 string retCI = resCI.Substring(resCI.IndexOf('|') + 1);
@@ -835,8 +838,8 @@ namespace My12306
                 //提交定单按钮   
                 //checkOrderInfo      {"checkHuimd":"Y","check608":"Y","msg":"","errMsg":"Y"}   {"checkHuimd":"N","check608":"Y","msg":"对不起，由于您取消次数过多，今日将不能继续受理您的订票请求！","errMsg":"Y"}
                 toolStripStatusLabel1.Text = "正在提交定单...";
-                method = "post";
-                strReferer = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=init";
+               // method = "post";
+                //strReferer = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=init";
                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=checkOrderInfo&rand=" + randcode;
                 strArgs = checkOrderInfo + "&tFlag=dc";
                 string resCOI = request.PostData(strURL, strArgs, "get");
@@ -859,7 +862,7 @@ namespace My12306
                 }
                 //getQueueCount   {"countT":0,"count":0,"ticket":"1*****30444*****00011*****00003*****0055","op_1":false,"op_2":false}
                 toolStripStatusLabel1.Text = "正在获取队列数量...";
-                method = "get";
+                //method = "get";
                 strArgs = "";
                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=getQueueCount&train_date=" + programs[currentprogramsIndex, 3] + "&train_no=" + programs[currentprogramsIndex, 4] + "&station=" + programs[currentprogramsIndex, 11] + "&seat=" + GetSeatCode(programs[currentprogramsIndex, 5]) + "&from=" + programs[currentprogramsIndex, 0] + "&to=" + programs[currentprogramsIndex, 2] + "&ticket=" + leftTicketStr;     
                 string resGQC = request.PostData(strURL, strArgs, "get");
@@ -882,7 +885,7 @@ namespace My12306
                 //confirmSingleForQueue       {"errMsg":"Y"}
                 toolStripStatusLabel1.Text = "正在确认定单（下定单）...";
                 System.Threading.Thread.Sleep(1500);
-                method = "post";
+                //method = "post";
                 strURL = "https://dynamic.12306.cn/otsweb/order/confirmPassengerAction.do?method=confirmSingleForQueue";
                 strArgs = checkOrderInfo;
                 string resGFQ = request.PostData(strURL, strArgs, "get");
@@ -904,7 +907,7 @@ namespace My12306
                 //queryOrderWaitTime       {"tourFlag":"dc","waitTime":-1,"waitCount":0,"orderId":"E744949127","requestId":5712441674113765581,"count":0}
                 toolStripStatusLabel1.Text = "获取等待时间...";
             OrderWait:
-                method = "get";
+                //method = "get";
                 strURL = "https://dynamic.12306.cn/otsweb/order/myOrderAction.do?method=queryOrderWaitTime&tourFlag=dc";
                 strArgs = "";
                 string resOWT = request.PostData(strURL, strArgs, "get");
@@ -983,10 +986,37 @@ namespace My12306
         }
         private void picCode_MouseClick(object sender, MouseEventArgs e)
         {
-            PictureBox pb = sender as PictureBox;
-           // MessageBox.Show(e.X+"-" +e.Y);
-            randCode += e.X+",";
-            randCode += (e.Y-30)+",";
+            randCode += e.X + ",";
+            randCode += (e.Y - 30) + ",";
+            Graphics g = ((PictureBox)sender).CreateGraphics();
+            g.DrawEllipse(new Pen(Color.Red,4),e.X-10,e.Y-10,20,20);
+            g.Dispose();
+        }
+
+
+        private void cboSeat_Click(object sender, EventArgs e)
+        {
+            string svalue = cboTrainNum.SelectedValue.ToString();
+            string seatTypes = svalue.Substring(svalue.IndexOf('|') + 1);
+            char[] stypes = seatTypes.ToCharArray();
+            
+            //绑定席别      
+            listTrain = new System.Collections.ArrayList();
+            for (int i = 0; i < seats.GetLength(0); i++)
+            {
+                if (Array.IndexOf(stypes,Convert.ToChar(seats[i, 1])) != -1)
+                {
+                    ListItem listItem = new ListItem();
+                    listItem.TextField = seats[i, 0];
+                    listItem.ValueField = seats[i, 2];
+                    listTrain.Add(listItem);
+                }
+            }
+            if (listTrain.Count == 0) return;
+            cboSeat.DataSource = listTrain;
+            cboSeat.DisplayMember = "TextField";
+            cboSeat.ValueMember = "ValueField";
+            cboSeat.SelectedIndex = 0;
         }
     }
 }

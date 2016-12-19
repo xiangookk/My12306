@@ -261,7 +261,7 @@
             this.gboLinkMan.Size = new System.Drawing.Size(505, 216);
             this.gboLinkMan.TabIndex = 10;
             this.gboLinkMan.TabStop = false;
-            this.gboLinkMan.Text = "❷选择乘客(暂时最大10个)";
+            this.gboLinkMan.Text = "❷选择乘客(暂时最大20个)";
             // 
             // checkBox20
             // 
@@ -691,6 +691,7 @@
             this.cboSeat.Name = "cboSeat";
             this.cboSeat.Size = new System.Drawing.Size(105, 20);
             this.cboSeat.TabIndex = 16;
+            this.cboSeat.Click += new System.EventHandler(this.cboSeat_Click);
             // 
             // label9
             // 
@@ -884,7 +885,7 @@
             this.MaximizeBox = false;
             this.Name = "FormMyTicket";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "h ";
+            this.Text = "飞翔火车票";
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picCode)).EndInit();
             this.gboLogin.ResumeLayout(false);

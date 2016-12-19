@@ -61,6 +61,15 @@ namespace My12306.Properties {
         }
         
         /// <summary>
+        ///   查找类似于 System.IO.MemoryStream 的 System.IO.UnmanagedMemoryStream 类型的本地化资源。
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream message {
+            get {
+                return ResourceManager.GetStream("message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 bjb|北京北|VAP|beijingbei|bjb|0@bjd|北京东|BOP|beijingdong|bjd|1@bji|北京|BJP|beijing|bj|2@bjn|北京南|VNP|beijingnan|bjn|3@bjx|北京西|BXP|beijingxi|bjx|4@cqb|重庆北|CUW|chongqingbei|cqb|5@cqi|重庆|CQW|chongqing|cq|6@cqn|重庆南|CRW|chongqingnan|cqn|7@sha|上海|SHH|shanghai|sh|8@shn|上海南|SNH|shanghainan|shn|9@shq|上海虹桥|AOH|shanghaihongqiao|shhq|10@shx|上海西|SXH|shanghaixi|shx|11@tjb|天津北|TBP|tianjinbei|tjb|12@tji|天津|TJP|tianjin|tj|13@tjn|天津南|TIP|tianjinnan|tjn|14@tjx|天津西|TXP|tianjinxi|tjx|15@cch|长春|CCT|changchun|cc|16@ccn|长春南|CET|changchu [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string station_name {
